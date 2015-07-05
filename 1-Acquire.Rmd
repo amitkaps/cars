@@ -17,7 +17,7 @@ The idea of the project is to create a small dataset of cars available in India,
 
 ## Scraping Data
 
-Lets start with getting all the car links out of the index pages.
+Lets start with getting all the car links out of the table pages. There are 11 pages so we will need to cycle through them to get the data.
 
 ```{r}
 library(rvest)
@@ -25,7 +25,7 @@ library(plyr)
 baseurl <- "http://carzoom.in/car-specification/page/"
 cars.link <- character(0)
 
-# Write a funcation to get links on one page
+# Write a function to get links on one page
 get_links <- function(pagenum){
   url <- paste0(baseurl, pagenum)
   pg.links <-  html(url) %>%
@@ -94,8 +94,8 @@ get_data <- function(url) {
 }
 
 # Cycle through all the links and create to the cars datafame
-cars.spec <- ldply(cars.link, get_data, .progress = "text")
-write.csv(cars.spec, file = "data/cars.spec.csv", row.names = FALSE)
+cars.spec.raw <- ldply(cars.link, get_data, .progress = "text")
+write.csv(cars.spec.raw, file = "data/cars.spec.raw.csv", row.names = FALSE)
     
 ```
 

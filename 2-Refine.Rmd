@@ -1,0 +1,79 @@
+---
+title: "Refine the Cars Data"
+author: "Amit Kapoor"
+date: "5 July 2015"
+output: html_document
+---
+
+# Refine the Data
+
+Now that we have got the raw data. We need to do a number of clean ups to actually make it into a useful data frame format for doing our exploration.
+
+```{r}
+library(dplyr)
+library(stringr)
+
+df.messy <- read.csv("data/cars.spec.raw.csv", stringsAsFactors = FALSE)
+str(df.messy)
+```
+
+Lets make this from long to wide format - mainly for the specs
+
+```{r}
+library(tidyr)
+df.tidier <- df.messy %>%
+             separate(spec, c("spec", "value"), ":")
+
+# Understand the number of specs - only 56
+df.tidier %>% 
+  group_by(spec) %>%
+  summarize(n()) %>%
+  View()
+
+df.tidy <- df.tidier %>%
+           spread(spec, value)
+```
+
+
+Let's start with cleaning name to get brand names
+
+```{r}
+# Lets start with name 
+df.tidy %>% 
+  group_by(name) %>%
+  summarize(n())
+
+# There are 203 unique names, lets start with taking the first word as brand
+# In base R:  first <- unlist(strsplit(string, split=" "))[1]
+df.tidy$brand <- word(df.tidy$name, 1)
+df.tidy %>% 
+  group_by(brand) %>%
+  summarize(n()) %>%
+  View()
+
+```
+
+Now. lets get the price as a numeric feature - we need to remove "Price (INR)Rs. " and remove the commas and make it as numeric
+```{r}
+pr <- "Price (INR)Rs. "
+len.pr <- str_length(pr)  # Can also use nchar()
+
+df.tidy$price <- df.tidy$price %>% 
+             str_sub(len.pr, nchar(df.tidy$price)) %>%
+             str_replace_all(",", "") %>%
+             as.numeric()
+```
+
+Now, lets get the body type - we need to remove "Body Type" and convert as factor
+
+```{r}
+bt <- "Body Type "
+len.bt <- str_length(bt)  # Can also use nchar()
+
+df.tidy$type <- df.tidy$type %>% 
+             str_sub(len.bt, nchar(df.tidy$type)) %>%
+             as.factor()
+```
+
+
+
