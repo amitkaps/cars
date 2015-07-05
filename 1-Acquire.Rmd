@@ -1,0 +1,116 @@
+---
+title: "Acquire Cars Data"
+author: "Amit Kapoor"
+date: "4 July 2015"
+output: html_document
+---
+
+## Data Sources
+
+The idea of the project is to create a small dataset of cars available in India, with the intention to comparing prices, specs, fuel economy etc. across car types. 
+
+- **[SIAM (Society of Indian Automobile Manufacturers)](http://www.siamindia.com/)**: This is the manufacturer government facing association and they do have statistical data on sales and market share of cars by segment and category (though it is paid). They do have one pdf document on fuel economy by car type and engine capacity - [SIAM Fuel Economy Data](http://www.siamindia.com/uploads/filemanager/256th-4W-FE-Data-Declaration.pdf)
+
+- **(ARAI (Automobile Research Association of India)](https://www.araiindia.com/)** - This is the government insitute responsible for providing certification and testing services and I would have expected them to have good database of specs and fuel economy for all the cars. Unfortunately, they don't have any public available data. A website called [ARAI mileage](http://araimileage.in/) seems to have a collected data but in a pdf very similiar to the SIAM format.
+
+- **Car comparison websites** - There are so many car comparison website avaiable - carwale.com, cardekho.com, overdrive.in, cartrade.com, zigwheels.com, auto.ndtv.com but most of them are setup to compare or select 3-4 cars at a time. We actually need a way to scrape the specification data for all the cars. Lets use one of these sites - [Car Zoom](http://carzoom.in/car-specification/) which has good list of specs and price info.
+
+## Scraping Data
+
+Lets start with getting all the car links out of the index pages.
+
+```{r}
+library(rvest)
+baseurl <- "http://carzoom.in/car-specification/page/"
+cars.link <- character(0)
+
+# Cycle through the 11 pages and get all the links
+for (pagenum in 1:11){
+  url <- paste0(baseurl, pagenum)
+  pg <-  html(url) %>%
+         html_nodes(".car-model li a")
+  
+  # Get the link for each car
+  pg.cars.link <- pg %>%
+                   html_attr("href")
+  
+  # Append the link vector to main link
+  cars.link <- c(cars.link, pg.cars.link)
+}
+
+cars.link
+str(cars.link)
+write.csv(cars, file = "data/cars.link.csv", row.names = FALSE)
+```
+
+Now lets scrape the specification from all the links. We would like to get the name and details of the model, price, type and all the specifications
+
+```{r}
+
+# Create an empty data frame (Should pre allocate maybe!)
+# Why Pre-allocate - http://stackoverflow.com/questions/20689650/how-to-append-rows-to-an-r-data-frame
+cars <- data.frame(name = character(),
+                   model = character(),
+                   url = character(),
+                   price = character(),
+                   type = character(),
+                   spec = character())
+
+# Cycle through all the links and add to the cars datafame
+
+for (url in cars.link[1:5]) {
+    pg.url <- url
+    pg.html <- html(pg.url)
+    
+    # Get the name and model from the data
+    pg.name <- pg.html %>% 
+                html_nodes(".crumbs-home+ a") %>%
+                html_text()
+    
+    pg.model<- pg.html %>% 
+                html_nodes(".current") %>%
+                html_text()
+    
+    # Get the Price and Body Type info listed in the brand info field
+    # This is a vector of length 2
+    pg.info <- pg.html %>% 
+                html_nodes(".brand_info_fields") %>%
+                html_text()
+    pg.info
+    
+    # Get all the specs listed on the page, this is a vector of length n
+    pg.spec <- pg.html %>% 
+               html_nodes("div.engine") %>%
+               html_text()
+    n <- length(pg.spec)
+    
+    # Create similiar length vector for name, model, url, price and type 
+    pg.name.rep <- rep(pg.name, n)
+    pg.model.rep <- rep(pg.model, n)
+    pg.url.rep <- rep(pg.url, n)
+    pg.price.rep <- rep(pg.info[1], n)
+    pg.type.rep <- rep(pg.info[2], n)
+    
+    # Create the data frame for the page data and add to the main database
+    pg.data <- data.frame(name = pg.name.rep, 
+                          model = pg.model.rep,
+                          url = pg.url.rep,
+                          price = pg.price.rep,
+                          type = pg.type.rep, 
+                          spec = pg.spec,
+                          stringsAsFactors = FALSE)
+    
+    cars <- rbind(cars, pg.data)
+}
+    
+```
+
+
+
+
+
+
+
+
+
+
