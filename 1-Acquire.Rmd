@@ -21,21 +21,24 @@ Lets start with getting all the car links out of the index pages.
 
 ```{r}
 library(rvest)
+library(plyr)
 baseurl <- "http://carzoom.in/car-specification/page/"
 cars.link <- character(0)
 
-# Cycle through the 11 pages and get all the links
-for (pagenum in 1:11){
+# Write a funcation to get links on one page
+get_links <- function(pagenum){
   url <- paste0(baseurl, pagenum)
-  pg <-  html(url) %>%
-         html_nodes(".car-model li a")
-  
-  # Get the link for each car
-  pg.cars.link <- pg %>%
-                   html_attr("href")
-  
-  # Append the link vector to main link
-  cars.link <- c(cars.link, pg.cars.link)
+  pg.links <-  html(url) %>%
+               html_nodes(".car-model li a")%>%
+               html_attr("href")
+  pg.links
+}
+get_links(1)
+
+# Cycle through the 11 pages and get all the links
+for (i in 1:11) {
+    links <- get_links(i)
+    cars.link <- c(cars.link, links)
 }
 
 cars.link
@@ -46,19 +49,8 @@ write.csv(cars, file = "data/cars.link.csv", row.names = FALSE)
 Now lets scrape the specification from all the links. We would like to get the name and details of the model, price, type and all the specifications
 
 ```{r}
-
-# Create an empty data frame (Should pre allocate maybe!)
-# Why Pre-allocate - http://stackoverflow.com/questions/20689650/how-to-append-rows-to-an-r-data-frame
-cars <- data.frame(name = character(),
-                   model = character(),
-                   url = character(),
-                   price = character(),
-                   type = character(),
-                   spec = character())
-
-# Cycle through all the links and add to the cars datafame
-
-for (url in cars.link[1:5]) {
+# Create a function to get the data on one page
+get_data <- function(url) {
     pg.url <- url
     pg.html <- html(pg.url)
     
@@ -99,9 +91,11 @@ for (url in cars.link[1:5]) {
                           type = pg.type.rep, 
                           spec = pg.spec,
                           stringsAsFactors = FALSE)
-    
-    cars <- rbind(cars, pg.data)
 }
+
+# Cycle through all the links and create to the cars datafame
+cars.spec <- ldply(cars.link, get_data, .progress = "text")
+write.csv(cars.spec, file = "data/cars.spec.csv", row.names = FALSE)
     
 ```
 
