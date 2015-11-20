@@ -1,0 +1,25 @@
+---
+title: "Explore the Cars"
+author: "Amit Kapoor"
+date: "12 July 2015"
+output: html_document
+---
+
+Lets explore the data set now
+
+```{r}
+# Import the data
+df <- df.tidy
+
+# Explore
+library(ggplot2)
+ggplot(df) + aes(type, price, color = type) + 
+  geom_jitter() + scale_y_log10()
+
+ggplot(df) + aes(type, price, color = type) + 
+  geom_jitter() + scale_y_log10()
+
+ggplot(df) + aes(kmplc, price, color = type) + 
+  geom_point() + scale_y_log10()
+
+```

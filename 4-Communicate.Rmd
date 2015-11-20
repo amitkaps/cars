@@ -1,0 +1,87 @@
+---
+title: "Communicate the Cars"
+author: "Amit Kapoor"
+date: "12 July 2015"
+output: html_document
+---
+
+Lets look at communicate the results
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+
+library(grid)
+library(ggplot2)
+library(gridExtra)
+
+theme_black <- function(base_size = 12, base_family = "Helvetica") {
+    theme(
+    line =  element_line(colour = "black", size = 0.5, linetype = 1,
+                            lineend = "butt"),
+    rect =  element_rect(fill = "white", colour = "black", size = 0.5, linetype = 1),
+    text =  element_text(family = base_family, face = "plain",
+                  colour = "black", size = base_size,
+                  hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9),
+    
+    axis.text =          element_text(size = rel(0.8), colour = "grey50"),
+    strip.text =         element_text(size = rel(0.8), colour = "grey50"),
+
+    axis.line =          element_line(colour = "grey50"),
+    axis.text.x =        element_text(vjust = 1),
+    axis.text.y =        element_text(hjust = 1),
+    axis.ticks =         element_line(colour = "grey50", size = 0.2),
+    axis.title =         element_text(colour = "grey50"),
+    axis.title.x =       element_text(vjust = 1),
+    axis.title.y =       element_text(hjust = 1),
+    axis.title.x =       element_text(vjust = 1),
+    axis.title.y =       element_text(angle = 90),
+    axis.ticks.length =  unit(0.3, "lines"),
+    axis.ticks.margin =  unit(0.5, "lines"),
+
+    legend.background =  element_rect(fill = 'black'),
+    legend.margin =      unit(0.2, "cm"),
+    legend.key =         element_rect(fill = "grey20", colour = "grey50"),
+    legend.key.size =    unit(1.2, "lines"),
+    legend.key.height =  NULL,
+    legend.key.width =   NULL,
+    legend.text =        element_text(size = rel(0.8), colour = "grey50"),
+    legend.text.align =  NULL,
+    legend.title =       element_text(size = rel(0.8), face = "plain", 
+                                      hjust = 0, colour = "grey50"),
+    legend.title.align = NULL,
+    legend.position =    "right",
+    legend.direction =   "vertical",
+    legend.justification = "center",
+    legend.box =         NULL,
+
+    panel.background =   element_rect(fill = "black", colour = NA),
+    panel.border =       element_rect(fill = NA, colour = NA),
+    panel.grid.major =   element_line(colour = "grey50", size = 0.2),
+    panel.grid.minor =   element_line(colour = "black", size = 0.5),
+    panel.margin =       unit(0.25, "lines"),
+
+    strip.background =   element_rect(fill = "grey30", colour = "grey10"),
+    strip.text.x =       element_text(),
+    strip.text.y =       element_text(angle = -90),
+
+    plot.background =    element_rect(colour = "black", fill = "black"),
+    plot.title =         element_text(size = rel(1.2)),
+    plot.margin =        unit(c(1, 1, 0.5, 0.5), "lines"),
+
+    complete = TRUE
+  )
+}
+attr(theme_black(), "complete")
+
+```
+
+Lets load the files
+
+```{r}
+cars <- df.tidy
+
+ggplot(cars) + aes(kmplc, price, color = type) + 
+  geom_jitter(size = 5) + scale_y_log10() + theme_black()
+
+```
+

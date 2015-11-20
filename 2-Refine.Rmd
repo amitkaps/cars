@@ -27,11 +27,31 @@ df.tidier <- df.messy %>%
 # Understand the number of specs - only 56
 df.tidier %>% 
   group_by(spec) %>%
-  summarize(n()) %>%
-  View()
+  summarize(n())
 
 df.tidy <- df.tidier %>%
            spread(spec, value)
+```
+
+Lets fix the names in the columns
+
+```{r}
+tidy.names = c("name", "model", "url", "price", "type", "abs", 
+               "acc", "aircon", "audiostr", "audio", "bluetooth", "bumper",
+               "boot", "fbrake", "rbrake", "cdplayer", "locking",
+               "airfilter", "cruise", "doorajar", "dseatwarn", 
+               "airbags", "ebd", "disp", "engtype", "ftrack","ftyres",
+               "fullsys", "tank", "fuel",
+               "wheelcaps", "weight", "clearance", "heater",
+               "immobiliser", "kerb", "keyless", "power", "torque",
+               "kmplc", "kmplh", "cylinder", "size", 
+               "sunroof", "pairbags", "steering", "fpowerwin", 
+               "rpowerwin", "rainwiper", "rtrack", "rtyres", "seat", 
+               "speaker", "tilt", "speed", "traction", "trans", 
+               "tubeless", "turning", "usb", "wheelbase", "brand")
+
+names(df.tidy) <- tidy.names
+str(df.tidy)
 ```
 
 
@@ -71,9 +91,53 @@ bt <- "Body Type "
 len.bt <- str_length(bt)  # Can also use nchar()
 
 df.tidy$type <- df.tidy$type %>% 
-             str_sub(len.bt, nchar(df.tidy$type)) %>%
-             as.factor()
+             str_sub(len.bt, nchar(df.tidy$type)) 
+
+df.tidy %>%
+  group_by(type) %>%
+  tally() %>%
+  View()
+
+# Clean up the tags
+
+# Remove non ASCII character
+df.tidy$type <- iconv(df.tidy$type, "latin1", "ASCII", sub="")
+
+df.tidy$type[df.tidy$type == "Hatchabck"] <- "Hatchback"
+df.tidy$type[df.tidy$type == "hatchback"] <- "Hatchback"
+df.tidy$type[df.tidy$type == "Hatchbackâ€Ž"] <- "Hatchback"
+
+
+df.tidy$type[df.tidy$name == "Audi Q7"] <- "MUV"
+
+df.tidy$type[df.tidy$type == "Seadan"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Sedna"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Sedans"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Seadn"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Saloon"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Saloon Sedan"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Luxury Sedan"] <- "Sedan"
+df.tidy$type[df.tidy$type == "Luxury"] <- "Sedan"
+
+
+df.tidy$type[df.tidy$type == "VAN"] <- "MUV"
+df.tidy$type[df.tidy$type == "Van"] <- "MUV"
+df.tidy$type[df.tidy$type == "Cabriolet"] <- "Convertible"
+df.tidy$type[df.tidy$type == "Sport Coupe"] <- "Convertible"
+df.tidy$type[df.tidy$type == "Supercar"] <- "Convertible"
+df.tidy$type[df.tidy$name == "Porsche Boxster"] <- "Convertible"
+
+df.small <- subset(df.tidy, is.na(df.tidy$type))
+
 ```
 
+```{r}
+# Convert as numeric
+df.tidy$kmplc <- as.numeric(df.tidy$kmplc)
+df.tidy$kmplh <- as.numeric(df.tidy$kmplh)
 
+df.tidy %>%
+  group_by(kmplh) %>%
+  tally() %>%
+  View()
 
