@@ -1,7 +1,7 @@
 ---
 title: "Explore the Cars"
 author: "Amit Kapoor"
-date: "12 July 2015"
+date: "July 2015"
 output: html_document
 ---
 
@@ -9,17 +9,39 @@ Lets explore the data set now
 
 ```{r}
 # Import the data
-df <- df.tidy
+df.hatch <- df.small %>%
+            filter(type == "Hatchback")
+
+df.sedan <- df.small %>%
+            filter(type == "Sedan")
 
 # Explore
 library(ggplot2)
-ggplot(df) + aes(type, price, color = type) + 
-  geom_jitter() + scale_y_log10()
 
-ggplot(df) + aes(type, price, color = type) + 
-  geom_jitter() + scale_y_log10()
+## Price vs bhp
+ggplot(df.small) + aes(bhp,price) + geom_point() +
+  geom_smooth(method = "lm")
 
-ggplot(df) + aes(kmplc, price, color = type) + 
-  geom_point() + scale_y_log10()
+ggplot(df.small) + aes(bhp,price,color = type) + geom_point() +
+  geom_smooth(method = "lm")
+
+ggplot(df.hatch) + aes(bhp,price) + geom_point() + 
+  geom_smooth(method = "lm")
+
+ggplot(df.sedan) + aes(bhp,price) + geom_point() + 
+  geom_smooth(method = "lm")
+
+## Price vs Kmplh
+ggplot(df.small) + aes(kmplh,price) + geom_point() +
+  geom_smooth(method = "lm")
+
+ggplot(df.small) + aes(kmplh,price,color = type) + geom_point() +
+  geom_smooth(method = "lm")
+
+ggplot(df.hatch) + aes(kmplh,price) + geom_point() + 
+  geom_smooth(method = "lm")
+
+ggplot(df.sedan) + aes(kmplh,price) + geom_point() + 
+  geom_smooth(method = "lm")
 
 ```

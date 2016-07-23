@@ -1,7 +1,7 @@
 ---
 title: "Refine the Cars Data"
 author: "Amit Kapoor"
-date: "5 July 2015"
+date: "July 2015"
 output: html_document
 ---
 
@@ -48,7 +48,7 @@ tidy.names = c("name", "model", "url", "price", "type", "abs",
                "sunroof", "pairbags", "steering", "fpowerwin", 
                "rpowerwin", "rainwiper", "rtrack", "rtyres", "seat", 
                "speaker", "tilt", "speed", "traction", "trans", 
-               "tubeless", "turning", "usb", "wheelbase", "brand")
+               "tubeless", "turning", "usb", "wheelbase")
 
 names(df.tidy) <- tidy.names
 str(df.tidy)
@@ -63,6 +63,11 @@ df.tidy %>%
   group_by(name) %>%
   summarize(n())
 
+# Fix specific brands
+df.tidy$name[df.tidy$name == "New Chevrolet Beat"] <- "Chevrolet Beat"
+df.tidy$name[df.tidy$name == "New 4S Fluidic Hyundai Verna"] <- "Hyundai Verna"
+df.tidy$name[df.tidy$name == "Chevrolet Sail Hatchback (U-VA)"] <- "Chevrolet Sail Hatchback"
+
 # There are 203 unique names, lets start with taking the first word as brand
 # In base R:  first <- unlist(strsplit(string, split=" "))[1]
 df.tidy$brand <- word(df.tidy$name, 1)
@@ -71,6 +76,7 @@ df.tidy %>%
   summarize(n()) %>%
   View()
 
+str(df.tidy)
 ```
 
 Now. lets get the price as a numeric feature - we need to remove "Price (INR)Rs. " and remove the commas and make it as numeric
@@ -127,17 +133,60 @@ df.tidy$type[df.tidy$type == "Sport Coupe"] <- "Convertible"
 df.tidy$type[df.tidy$type == "Supercar"] <- "Convertible"
 df.tidy$type[df.tidy$name == "Porsche Boxster"] <- "Convertible"
 
-df.small <- subset(df.tidy, is.na(df.tidy$type))
+```
+
+```{r}
+# 
+df.tidy <- df.tidy %>%
+           separate(power, c("bhp", "rpm"), "@")
+
+df.tidy$bhp <- df.tidy$bhp %>%
+               str_replace_all("bhp", "") 
+df.tidy$bhp <- as.numeric(df.tidy$bhp) 
+
+df.tidy$bhp[df.tidy$bhp == 9066.00] <- 90.66
+
+df.tidy$rpm <- df.tidy$rpm %>%
+               str_replace_all("rpm", "") 
+
+df.tidy$rpm <- df.tidy$rpm %>%
+               str_replace_all("RPM", "") 
+
+df.tidy$kmplh <- as.numeric(df.tidy$kmplh)
+
+
+write.csv(df.tidy, file="data/cars_tidy.csv", quote = FALSE,
+          row.names = FALSE)
 
 ```
 
 ```{r}
-# Convert as numeric
-df.tidy$kmplc <- as.numeric(df.tidy$kmplc)
-df.tidy$kmplh <- as.numeric(df.tidy$kmplh)
+# Take Petrol + Hatchback & Sedan and Price < 9L
 
-df.tidy %>%
-  group_by(kmplh) %>%
-  tally() %>%
-  View()
+df.small <- df.tidy %>%
+            filter(fuel == ' Petrol') %>%
+            arrange(name, price) %>%
+            filter(price < 1000000)  %>%
+            mutate(price = round(price/1000, 0)) %>%
+            filter(type =='Hatchback' | type == "Sedan") %>%
+            select(name, price, type, kmplh, bhp, fuel, brand)
 
+# Delete duplicate rows      
+df.small <- df.small[!duplicated(df.small$name),]
+# Delete NAs
+df.small <- df.small[complete.cases(df.small),]
+       
+# Delete some duplicate models
+df.small <- df.small[df.small$name != "Volkswagen Polo GT", ]
+df.small <- df.small[df.small$name != "Volkswagen Cross Polo", ]
+df.small <- df.small[df.small$name != "Maruti Suzuki WagonR Stingray", ]
+df.small <- df.small[df.small$name != "Honda Jazz", ]
+df.small <- df.small[df.small$name != "Toyota Etios Xclusive", ]
+df.small <- df.small[df.small$name != "Hyundai Grand i10", ]
+df.small <- df.small[df.small$name != "Hyundai i20 Active", ]
+
+
+View(df.small)
+write.csv(df.small, file="data/cars_small.csv", quote = FALSE,
+          row.names = FALSE)
+```

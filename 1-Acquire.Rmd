@@ -1,7 +1,7 @@
 ---
 title: "Acquire Cars Data"
 author: "Amit Kapoor"
-date: "4 July 2015"
+date: "July 2015"
 output: html_document
 ---
 

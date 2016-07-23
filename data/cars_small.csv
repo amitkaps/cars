@@ -1,0 +1,43 @@
+name,price,type,kmplh,bhp,fuel,brand
+Chevrolet Beat,421,Hatchback,18.6,79.4, Petrol,Chevrolet
+Chevrolet Sail,551,Sedan,18.2,82.45, Petrol,Chevrolet
+Chevrolet Sail Hatchback,468,Hatchback,18.2,82.45, Petrol,Chevrolet
+Chevrolet Spark,345,Hatchback,16.2,62.14, Petrol,Chevrolet
+Fiat Linea Classic,612,Sedan,14.9,88.77, Petrol,Fiat
+Fiat New Linea,700,Sedan,15.7,112.4, Petrol,Fiat
+Fiat Punto Evo,499,Hatchback,15.8,67.07, Petrol,Fiat
+Ford Classic,506,Sedan,14.09,99.6, Petrol,Ford
+Ford Figo 2014,414,Hatchback,15.33,70.03, Petrol,Ford
+Honda Amaze,519,Sedan,18,86.79, Petrol,Honda
+Honda Brio,421,Hatchback,19.4,86.79, Petrol,Honda
+Hyundai EON,302,Hatchback,21.1,55.23, Petrol,Hyundai
+Hyundai i10,418,Hatchback,19.81,68.05, Petrol,Hyundai
+Hyundai i20,523,Hatchback,18.6,81.86, Petrol,Hyundai
+Hyundai Verna,774,Sedan,17.43,105.5, Petrol,Hyundai
+Hyundai Xcent,496,Sedan,19.1,81.86, Petrol,Hyundai
+Maruti Suzuki Alto,315,Hatchback,24.07,67.1, Petrol,Maruti
+Maruti Suzuki Alto 800,248,Hatchback,22.74,47.3, Petrol,Maruti
+Maruti Suzuki Celerio,392,Hatchback,23.1,67.07, Petrol,Maruti
+Maruti Suzuki Ciaz,725,Sedan,20.73,91.2, Petrol,Maruti
+Maruti Suzuki Estilo,338,Hatchback,19,67, Petrol,Maruti
+Maruti Suzuki Ritz,442,Hatchback,18.5,86, Petrol,Maruti
+Maruti Suzuki Swift,462,Hatchback,20.4,83.15, Petrol,Maruti
+Maruti Suzuki Swift DZire,508,Sedan,19.1,85.8, Petrol,Maruti
+Maruti Suzuki SX4,715,Sedan,16.51,103, Petrol,Maruti
+Maruti Suzuki Wagon-R,363,Hatchback,20.5,67.07, Petrol,Maruti
+Nissan Datsun GO,312,Hatchback,20.6,67.07, Petrol,Nissan
+Nissan Micra,413,Hatchback,19.49,67, Petrol,Nissan
+Nissan Sunny,699,Sedan,16.95,97.6, Petrol,Nissan
+Renault Pulse,446,Hatchback,18,74, Petrol,Renault
+Renault Scala,724,Sedan,16.95,98, Petrol,Renault
+San Motors Storm,595,Sedan,16,59, Petrol,San
+Skoda Fabia,503,Hatchback,16.4,75, Petrol,Skoda
+Skoda Rapid,756,Sedan,15,103.5, Petrol,Skoda
+Tata Indigo eCS,499,Sedan,14,65, Petrol,Tata
+Tata Nano,199,Hatchback,23.9,37.5, Petrol,Tata
+Tata Zest,481,Sedan,17.6,88.8, Petrol,Tata
+Toyota Etios,603,Sedan,16.78,88.77, Petrol,Toyota
+Toyota Etios Liva,500,Hatchback,17.71,78.87, Petrol,Toyota
+Volkswagen Polo,535,Hatchback,16.47,73.97, Petrol,Volkswagen
+Volkswagen Up,360,Hatchback,21,74, Petrol,Volkswagen
+Volkswagen Vento,785,Sedan,16.09,103.56, Petrol,Volkswagen
